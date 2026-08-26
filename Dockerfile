@@ -5,6 +5,6 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci --omit=dev
 
-COPY play-with-n8n.js ./
+COPY n8n-outlook.js ./
 
 CMD ["npm", "start"]
