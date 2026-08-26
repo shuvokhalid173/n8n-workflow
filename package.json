@@ -1,0 +1,15 @@
+{
+  "name": "n8n-gmail-downloader",
+  "version": "1.0.0",
+  "description": "Programmatic workflow automation system using n8n and Node.js",
+  "main": "play-with-n8n.js",
+  "scripts": {
+    "start": "node play-with-n8n.js"
+  },
+  "dependencies": {
+    "axios": "^1.6.0",
+    "dotenv": "^16.3.1"
+  },
+  "author": "",
+  "license": "ISC"
+}

@@ -1,0 +1,44 @@
+name: n8n-gmail-pdf-workflow
+
+services:
+  n8n:
+    image: docker.n8n.io/n8nio/n8n:latest
+    container_name: n8n
+    ports:
+      - "5678:5678"
+    environment:
+      N8N_RESTRICT_FILE_ACCESS_TO: /home/node/downloads
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - ./downloads:/home/node/downloads
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "node -e \"fetch('http://127.0.0.1:5678/healthz').then((r) => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))\""
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+
+  my_project:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: my_project_image:latest
+    depends_on:
+      n8n:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      N8N_HOST: http://n8n:5678
+      LOCAL_DOWNLOAD_PATH: ./downloads/
+      N8N_CONTAINER_DOWNLOAD_PATH: /home/node/downloads/
+    volumes:
+      - ./downloads:/home/node/downloads
+    restart: "no"
+
+volumes:
+  n8n_data:
