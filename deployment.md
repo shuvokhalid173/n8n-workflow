@@ -1,3 +1,33 @@
+PM2 failed because it tried to execute `N8N.CMD` (a Windows batch file) directly using Node.js, which threw a `SyntaxError` when it encountered the `@ECHO off` batch syntax.
+
+### Solution: Target the JavaScript Binary Directly
+
+Run these commands in your PowerShell window to clean up the errored process and start n8n directly via its JavaScript entry point:
+
+```powershell
+# 1. Delete the failed process entry
+pm2 delete n8n-server
+
+# 2. Start n8n using its JS file path
+pm2 start "$env:APPDATA\npm\node_modules\n8n\bin\n8n" --name "n8n-server"
+
+# 3. Save the process configuration for system reboots
+pm2 save
+
+```
+
+### Verification
+
+Check the process status and startup logs:
+
+```powershell
+pm2 status
+pm2 logs n8n-server --lines 20
+
+```
+
+Once the log displays `Editor is now accessible at http://localhost:5678/`, open `http://localhost:5678` in the browser to access n8n.
+
 On Windows machines with dual-core processors, running `n8n start` directly in PowerShell hangs because n8n defaults to spawning separate child worker processes (`EXECUTIONS_PROCESS=own`), causing the Node event loop to lock before binding to port `5678`.
 
 **Step 1: Terminate the Stuck Process**
