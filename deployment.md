@@ -1,3 +1,33 @@
+The `Cannot GET /` error occurs because n8n is an oclif CLI application. Executing the `bin\n8n` script directly without passing the **`start`** argument boots the CLI entry point rather than launching the web editor and static file routes.
+
+### Resolution Steps
+
+**1. Delete the misconfigured PM2 process**
+
+```powershell
+pm2 delete n8n-server
+
+```
+
+**2. Start n8n with the `start` argument passed after `--**`
+
+```powershell
+pm2 start "$env:APPDATA\npm\node_modules\n8n\bin\n8n" --name "n8n-server" -- start
+
+```
+
+**3. Save the process configuration**
+
+```powershell
+pm2 save
+
+```
+
+**4. Access the Editor**
+Refresh `http://localhost:5678` in the browser. The n8n setup UI will now render correctly.
+
+
+
 PM2 failed because it tried to execute `N8N.CMD` (a Windows batch file) directly using Node.js, which threw a `SyntaxError` when it encountered the `@ECHO off` batch syntax.
 
 ### Solution: Target the JavaScript Binary Directly
